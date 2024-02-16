@@ -26,13 +26,14 @@ const PokemonTable = () => {
   }
 
   return (
-    <>
-    <CompletedPokemon guesses={guesses} data={data}/>
-    <Grid container justifyContent="center" alignItems="center">
+    <Grid container spacing={2}>
+      <Grid item xs={3} >
+        <CompletedPokemon guesses={guesses} data={data} isCorrect={true} />
+      </Grid>
+      <Grid item xs={6} >
       {data.map((item, index) => (
         <Grid item sm={12} key={item.name} textAlign="center">
           {guesses[item.name] === undefined && index === current && (
-            <>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Typography pr={2} pt={0.5} variant="h4">#{index + 1}</Typography>
               <TextField
@@ -48,7 +49,6 @@ const PokemonTable = () => {
               />
               <img src={item.imageSil} alt={item.label} />
             </div>
-            </>
           )}
           {guesses[item.name] === undefined && index !== current && (
             <>
@@ -67,8 +67,11 @@ const PokemonTable = () => {
           )}
         </Grid>
       ))}
+      </Grid>
+      <Grid item xs={3} >
+        <CompletedPokemon guesses={guesses} data={data} isCorrect={false} />
+      </Grid>
     </Grid>
-  </>
   )
 }
 

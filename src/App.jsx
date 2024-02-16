@@ -6,9 +6,9 @@ function App() {
   return (
     <>
     <Header />
-    <Grid container direction="column"  style={{ minHeight: "90vh", width: "75%"}} display="inline">
+    <Grid container direction="column"  style={{ minHeight: "90vh" }} >
       <Grid item>
-        <PokemonTable style={{ width: "80%" }}/>
+        <PokemonTable />
       </Grid>
     </Grid>
     </>
