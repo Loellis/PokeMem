@@ -1,23 +1,16 @@
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Grid, TextField, Typography } from "@mui/material"
 import { data } from "../assets/pokemonData"
 import { isGuessCloseEnough } from "../utils/utils"
 import CompletedPokemon from "./CompletedPokemon"
 
 const PokemonTable = () => {
-  const [guesses, setGuesses] = useState({});
+  const [guesses, setGuesses] = useState({})
   const [current, setCurrent] = useState(0)
-  const topTextFieldRef = useRef(null)
-
-  useEffect(() => {
-    if (topTextFieldRef.current) {
-      topTextFieldRef.current.focus()
-    }
-  }, [guesses])
+  const windowSize = 5
 
   const handleGuess = (name, event) => {
     const { value } = event.target
-    console.log(name)
     setGuesses(prevGuesses => ({
       ...prevGuesses, 
       [name]: isGuessCloseEnough(value.trim().toLowerCase(), name.toLowerCase())
@@ -31,10 +24,10 @@ const PokemonTable = () => {
         <CompletedPokemon guesses={guesses} data={data} isCorrect={true} />
       </Grid>
       <Grid item xs={6} >
-      {data.map((item, index) => (
-        <Grid item sm={12} key={item.name} textAlign="center">
+      {data.slice(0, Math.min(data.length, current + windowSize)).map((item, index) => (
+        <Grid item sm={12} key={item.name} textAlign="center" className="pokemon-item" style={{ opacity: 1 - Math.min(Math.abs(index - current) / (windowSize), 1) }}>
           {guesses[item.name] === undefined && index === current && (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div className="pokemon-item focused" >
               <Typography pr={2} pt={0.5} variant="h4">#{index + 1}</Typography>
               <TextField
                 margin="dense"
@@ -47,12 +40,12 @@ const PokemonTable = () => {
                   }
                 }} 
               />
-              <img src={item.imageSil} alt={item.label} />
+              <img src={item.imageSil} alt={item.name} />
             </div>
           )}
           {guesses[item.name] === undefined && index !== current && (
             <>
-              <img src={item.imageSil} alt={item.label} />
+              <img src={item.imageSil} alt={item.name} />
               <TextField
                 style={{ width: "60%" }} 
                 label="Enter Pokémon Name" 

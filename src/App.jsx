@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material"
 import PokemonTable from "./components/PokemonTable"
 import Header from "./components/Header"
+import "./App.css"
 
 function App() {
   return (
