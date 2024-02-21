@@ -1,7 +1,30 @@
-import { Paper, Stack } from "@mui/material";
+import { Paper, Stack, Typography } from "@mui/material"
+import { useState, useEffect } from "react"
+
+const numberOfColumns = () => {
+  const full_width = Math.min(1280, window.innerWidth)
+  const sidebar_width = full_width/4
+  const sidebar_adjusted = sidebar_width - 100
+  const numOfCols = Math.floor(sidebar_adjusted / 49)
+
+  return numOfCols
+}
 
 const CompletedPokemon = ({ guesses, data, isCorrect }) => {
-  const filteredData = data.filter((item) => guesses[item.name] === isCorrect);
+  const [filteredData, setFilteredData] = useState([])
+  const numColumns = numberOfColumns()
+  const numRows = 7
+  const itemsBeforeEllipse = (numColumns * numRows) - 1
+
+  useEffect(() => {
+    const newFilteredData = data.filter((item) => guesses[item.name] === isCorrect)
+
+    if (newFilteredData.length > itemsBeforeEllipse) {
+      setFilteredData(newFilteredData.splice(-itemsBeforeEllipse))
+    } else {
+      setFilteredData(newFilteredData)
+    }
+  }, [data, guesses, isCorrect, itemsBeforeEllipse])
 
   return (
     <div style={{ justifyContent: "center", alignItems: "center", maxWidth: "100%"}}>
@@ -10,7 +33,7 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
           <span
             role="img"
             aria-label={isCorrect ? "checkmark" : "cross"}
-            style={{ fontSize: "2rem", position: "relative", top: "-1em" }}
+            style={{ fontSize: "2rem", position: "relative", top: filteredData.length === itemsBeforeEllipse ? 0 : "-1em" }}
           >
             {isCorrect ? "✅" : "❌"}
           </span>
@@ -22,14 +45,25 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
               display: "inline-flex",
               flexWrap: "wrap",
               justifyContent: "center",
-              maxWidth: "80%"
+              maxWidth: "80%",
+              maxHeight: "55vh",
+              overflow: "hidden"
             }}
           >
-            {filteredData.map((item) => (
-              <Stack key={item.name} sx={{ margin: "5px", width: "49px" }}>
-                <img src={item.image} alt={item.name} style={{ margin: "1px"}} />
+            {filteredData.length === itemsBeforeEllipse && (
+              <Stack sx={{ margin: "5px", maxWidth: "49px" }}>
+                <Typography fontSize="16px" color="text.secondary" textAlign="center"
+                sx={{ width: "47px", height: "47px", margin: "1px"}}
+                >
+                  . . .
+                </Typography>
               </Stack>
-            ))}
+            )}
+            {filteredData.map((item) => (
+              <Stack key={item.name} sx={{ margin: "5px", maxWidth: "49px" }}>
+                <img src={item.image} alt={item.name} style={{ margin: "1px" }} />
+              </Stack>
+              ))}
           </Paper>
         </>
       )}
