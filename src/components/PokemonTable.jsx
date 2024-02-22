@@ -60,7 +60,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) =
                       {item.types.map((type) => (
                         <img
                           key={type}
-                          src={`/public/images/types/${type}.png`}
+                          src={`/images/types/${type}.png`}
                           alt={type}
                           height="20px"
                           style={{ marginRight: "2px" }}
