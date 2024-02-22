@@ -10,11 +10,12 @@ function App() {
   const [score, setScore] = useState(0)
   const [gameStarted, setGameStarted] = useState(false)
   const [elapsedTime, setElapsedTime] = useState(0)
+  const [finished, setFinished] = useState(false)
   const [hardMode, setHardMode] = useState(false)
   const timeRef = useRef(null)
 
   useEffect(() => {
-    if (gameStarted) {
+    if (gameStarted && !finished) {
       timeRef.current = setInterval(() => {
         setElapsedTime((prevTime) => prevTime + 1)
       }, 1000)
@@ -23,7 +24,7 @@ function App() {
     }
 
     return () => clearInterval(timeRef.current)
-  }, [gameStarted])
+  }, [gameStarted, finished])
 
   const handleStart = (isHardMode) => {
     setGameStarted(true)
@@ -32,18 +33,20 @@ function App() {
 
   return (
     <>
-    <Header />
+    <Header gameStarted={gameStarted} />
     <Grid container direction="column"  style={{ minHeight: "90vh" }} >
       {!gameStarted && (
         <StartPage onStart={handleStart} setHardMode={setHardMode}/>
       )}
       {gameStarted && (
         <>
+          {!finished && (
+            <Grid item>
+              <GameTracker score={score} elapsedTime={elapsedTime} />
+            </Grid>
+          )}
           <Grid item>
-            <GameTracker score={score} elapsedTime={elapsedTime} />
-          </Grid>
-          <Grid item>
-            <PokemonTable setScore={setScore} hardMode={hardMode} />
+            <PokemonTable score={score} setScore={setScore} elapsedTime={elapsedTime} hardMode={hardMode} setFinished={setFinished} />
           </Grid>
         </>
       )}

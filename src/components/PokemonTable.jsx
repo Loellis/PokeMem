@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Grid, TextField, Typography } from "@mui/material"
 import { data } from "../assets/pokemonData"
-import { isGuessCloseEnough } from "../utils/utils"
+import { isGuessCloseEnough, formatTimeString } from "../utils/utils"
 import CompletedPokemon from "./CompletedPokemon"
 
-const PokemonTable = ({ setScore, hardMode }) => {
+const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) => {
   const [guesses, setGuesses] = useState({})
   const [current, setCurrent] = useState(0)
   const windowSize = 5
@@ -22,6 +22,10 @@ const PokemonTable = ({ setScore, hardMode }) => {
     if (isCorrect) {
       setScore(prevScore => hardMode ? prevScore + 2 : prevScore + 1)
     }
+
+    if (current === 150) {
+      setFinished(true)
+    }
   }
 
   return (
@@ -32,7 +36,7 @@ const PokemonTable = ({ setScore, hardMode }) => {
       <Grid item xs={6} >
       {data.slice(0, Math.min(data.length, current + windowSize)).map((item, index) => (
         <Grid item sm={12} key={item.name} textAlign="center" className="pokemon-item" style={{ opacity: 1 - Math.min(Math.abs(index - current) / (windowSize), 1) }}>
-          {guesses[item.name] === undefined && index === current && (
+          {guesses[item.name] === undefined && index === current && current !== 151 && (
             <div className="pokemon-item focused" >
               <Typography pr={2} pt={0.5} variant="h4">#{index + 1}</Typography>
               <TextField
@@ -66,6 +70,12 @@ const PokemonTable = ({ setScore, hardMode }) => {
           )}
         </Grid>
       ))}
+      {current === 151 && (
+        <div className="end-game-score" style={{paddingTop: "5em"}}>
+          <Typography variant="h3" sx={{ padding: "5px"}} >Your final score is {score}!</Typography>
+          <Typography variant="h3" sx={{ padding: "5px"}} >With a time of: {formatTimeString(parseInt(elapsedTime))}</Typography>
+        </div>
+      )}
       </Grid>
       <Grid item xs={3} >
         <CompletedPokemon guesses={guesses} data={data} isCorrect={false} />
