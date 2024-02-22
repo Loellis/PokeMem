@@ -20,7 +20,7 @@ const PokemonTable = ({ setScore, hardMode }) => {
     setCurrent(current + 1)
 
     if (isCorrect) {
-      setScore(prevScore => prevScore + 1)
+      setScore(prevScore => hardMode ? prevScore + 2 : prevScore + 1)
     }
   }
 

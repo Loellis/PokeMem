@@ -1,6 +1,7 @@
 import { Grid, Typography } from "@mui/material";
+import { formatTimeString } from "../utils/utils";
 
-const GameTracker = ({ score }) => {
+const GameTracker = ({ score, elapsedTime }) => {
 
 
   return (
@@ -16,7 +17,7 @@ const GameTracker = ({ score }) => {
         <Typography variant="h4" aria-label="ElaspedTime">Timer: </Typography>
         </Grid>
         <Grid item xs={6} textAlign={"left"}>
-        <Typography variant="h4">NOOT NOOT seconds</Typography>
+        <Typography variant="h4">{formatTimeString(parseInt(elapsedTime))}</Typography>
         </Grid>
       </Grid>
 
