@@ -1,44 +1,25 @@
-import { useState, useEffect, useRef } from "react";
+import { Grid, Typography } from "@mui/material";
 
-const GameTracker = () => {
-  const [score, setScore] = useState(0);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  const startTimeRef = useRef(null);
+const GameTracker = ({ score }) => {
 
-  useEffect(() => {
-    // Start timer on first keypress
-    const handleKeyPress = (event) => {
-      if (!startTimeRef.current) {
-        startTimeRef.current = Date.now();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Update elapsed time every second
-    const interval = setInterval(() => {
-      if (startTimeRef.current) {
-        setElapsedTime(Date.now() - startTimeRef.current);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Update score when passed as a prop
-  const handleScoreUpdate = () => setScore(score + 1);
 
   return (
     <div>
-      <p>Score: {score}</p>
-      <p>Elapsed Time: {elapsedTime / 1000} seconds</p>
-      {/* Pass handleScoreUpdate to other components where needed */}
+      <Grid container spacing={2}>
+        <Grid item xs={6} textAlign={"right"}>
+        <Typography variant="h4" aria-label="Score">Score:</Typography>
+        </Grid>
+        <Grid item xs={6} textAlign={"left"}>
+        <Typography variant="h4">{score}</Typography>
+        </Grid>
+        <Grid item xs={6} textAlign={"right"}>
+        <Typography variant="h4" aria-label="ElaspedTime">Timer: </Typography>
+        </Grid>
+        <Grid item xs={6} textAlign={"left"}>
+        <Typography variant="h4">NOOT NOOT seconds</Typography>
+        </Grid>
+      </Grid>
+
     </div>
   );
 };

@@ -4,18 +4,24 @@ import { data } from "../assets/pokemonData"
 import { isGuessCloseEnough } from "../utils/utils"
 import CompletedPokemon from "./CompletedPokemon"
 
-const PokemonTable = () => {
+const PokemonTable = ({ setScore, hardMode }) => {
   const [guesses, setGuesses] = useState({})
   const [current, setCurrent] = useState(0)
   const windowSize = 5
 
   const handleGuess = (name, event) => {
     const { value } = event.target
+    const isCorrect = isGuessCloseEnough(value.trim().toLowerCase(), name.toLowerCase())
+
     setGuesses(prevGuesses => ({
       ...prevGuesses, 
-      [name]: isGuessCloseEnough(value.trim().toLowerCase(), name.toLowerCase())
+      [name]: isCorrect
     }))
     setCurrent(current + 1)
+
+    if (isCorrect) {
+      setScore(prevScore => prevScore + 1)
+    }
   }
 
   return (
@@ -40,12 +46,12 @@ const PokemonTable = () => {
                   }
                 }} 
               />
-              <img src={item.imageSil} alt={item.name} />
+              {!hardMode && <img src={item.imageSil} alt={item.name} />}
             </div>
           )}
           {guesses[item.name] === undefined && index !== current && (
             <>
-              <img src={item.imageSil} alt={item.name} />
+              {!hardMode && <img src={item.imageSil} alt={item.name} />}
               <TextField
                 style={{ width: "60%" }} 
                 label="Enter Pokémon Name" 
