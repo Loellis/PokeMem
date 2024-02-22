@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Grid, TextField, Typography } from "@mui/material"
+import { Grid, TextField, Typography, Box } from "@mui/material"
 import { data } from "../assets/pokemonData"
 import { isGuessCloseEnough, formatTimeString } from "../utils/utils"
 import CompletedPokemon from "./CompletedPokemon"
@@ -38,19 +38,38 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) =
         <Grid item sm={12} key={item.name} textAlign="center" className="pokemon-item" style={{ opacity: 1 - Math.min(Math.abs(index - current) / (windowSize), 1) }}>
           {guesses[item.name] === undefined && index === current && current !== 151 && (
             <div className="pokemon-item focused" >
-              <Typography pr={2} pt={0.5} variant="h4">#{index + 1}</Typography>
-              <TextField
-                margin="dense"
-                autoFocus
-                style={{ width: "40%" }} 
-                label="Enter Pokémon Name" 
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleGuess(item.name, e)
-                  }
-                }} 
-              />
-              {!hardMode && <img src={item.imageSil} alt={item.name} />}
+              <Grid container spacing={0} direction="column" >
+                <Grid item display="flex" justifyContent="center" alignItems="center">
+                  <Typography pr={2} variant="h4">#{index + 1}</Typography>
+                  <TextField
+                    margin="normal"
+                    autoFocus
+                    style={{ width: "40%" }} 
+                    label="Enter Pokémon Name" 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleGuess(item.name, e)
+                      }
+                    }} 
+                  />
+                  {!hardMode && <img src={item.imageSil} alt={item.name} />}
+                </Grid>
+                <Grid item>
+                  {item.types && (
+                    <Box mt={2} display="flex" justifyContent="center">
+                      {item.types.map((type) => (
+                        <img
+                          key={type}
+                          src={`/public/images/types/${type}.png`}
+                          alt={type}
+                          height="20px"
+                          style={{ marginRight: "2px" }}
+                        />
+                      ))}
+                    </Box>
+                  )}
+                </Grid>
+              </Grid>
             </div>
           )}
           {guesses[item.name] === undefined && index !== current && (
