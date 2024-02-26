@@ -1,10 +1,9 @@
 import { useState } from "react"
 import { Grid, TextField, Typography, Box } from "@mui/material"
-import { data } from "../assets/pokemonData"
 import { isGuessCloseEnough, formatTimeString } from "../utils/utils"
 import CompletedPokemon from "./CompletedPokemon"
 
-const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) => {
+const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, data }) => {
   const [guesses, setGuesses] = useState({})
   const [current, setCurrent] = useState(0)
   const windowSize = 5
@@ -23,7 +22,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) =
       setScore(prevScore => hardMode ? prevScore + 2 : prevScore + 1)
     }
 
-    if (current === 150) {
+    if (current === data.length - 1) {
       setFinished(true)
     }
   }
@@ -36,7 +35,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) =
       <Grid item xs={6} >
       {data.slice(0, Math.min(data.length, current + windowSize)).map((item, index) => (
         <Grid item sm={12} key={item.name} textAlign="center" className="pokemon-item" style={{ opacity: 1 - Math.min(Math.abs(index - current) / (windowSize), 1) }}>
-          {guesses[item.name] === undefined && index === current && current !== 151 && (
+          {guesses[item.name] === undefined && index === current && current !== data.length && (
             <div className="pokemon-item focused" >
               <Grid container spacing={0} direction="column" >
                 <Grid item display="flex" justifyContent="center" alignItems="center">
@@ -89,7 +88,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished }) =
           )}
         </Grid>
       ))}
-      {current === 151 && (
+      {current === data.length && (
         <div className="end-game-score" style={{paddingTop: "5em"}}>
           <Typography variant="h3" sx={{ padding: "5px"}} >Your final score is {score}!</Typography>
           <Typography variant="h3" sx={{ padding: "5px"}} >With a time of: {formatTimeString(parseInt(elapsedTime))}</Typography>

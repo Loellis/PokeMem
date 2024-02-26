@@ -14,20 +14,20 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
   const [filteredData, setFilteredData] = useState([])
   const numColumns = numberOfColumns()
   const numRows = 7
-  const itemsBeforeEllipse = (numColumns * numRows) - 1
+  const itemsBeforeEllipse = numColumns * numRows - 1
 
   useEffect(() => {
     const newFilteredData = data.filter((item) => guesses[item.name] === isCorrect)
 
     if (newFilteredData.length > itemsBeforeEllipse) {
-      setFilteredData(newFilteredData.splice(-itemsBeforeEllipse))
+      setFilteredData(newFilteredData.slice(-itemsBeforeEllipse))
     } else {
       setFilteredData(newFilteredData)
     }
   }, [data, guesses, isCorrect, itemsBeforeEllipse])
 
   return (
-    <div style={{ justifyContent: "center", alignItems: "center", maxWidth: "100%"}}>
+    <div style={{ justifyContent: "center", alignItems: "center", maxWidth: "100%" }}>
       {filteredData.length > 0 && (
         <>
           <span
@@ -40,7 +40,7 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
           <Paper
             sx={{
               margin: "5px",
-              border: isCorrect ? "3px solid #5DA746" : "3px solid #BA0C0C",
+              border: `3px solid ${isCorrect ? "#5DA746" : "#BA0C0C"}`,
               padding: "5px",
               display: "inline-flex",
               flexWrap: "wrap",
@@ -52,9 +52,7 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
           >
             {filteredData.length === itemsBeforeEllipse && (
               <Stack sx={{ margin: "5px", maxWidth: "49px" }}>
-                <Typography fontSize="16px" color="text.secondary" textAlign="center"
-                sx={{ width: "47px", height: "47px", margin: "1px"}}
-                >
+                <Typography fontSize="16px" fontWeight="bold" textAlign="center" width="49px">
                   . . .
                 </Typography>
               </Stack>
@@ -63,12 +61,12 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
               <Stack key={item.name} sx={{ margin: "5px", maxWidth: "49px" }}>
                 <img src={item.image} alt={item.name} style={{ margin: "1px" }} />
               </Stack>
-              ))}
+            ))}
           </Paper>
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CompletedPokemon;
+export default CompletedPokemon
