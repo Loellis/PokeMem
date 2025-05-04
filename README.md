@@ -2,8 +2,7 @@
 
 ## To Do
 - Animate next Pokémon focus
-- Fix bug not showing all guess pokemon when screen is smaller
 - Create a leaderboard
-- Three strikes before failure
-- Fix nidoran
 - Fail whole evolution line when missing an earlier stage pokemon
+- Return to "start screen" when title is pressed (are you sure? modal maybe)
+- Make "failed" and "successful" pokemon groupings scrollable

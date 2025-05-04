@@ -17,7 +17,17 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
   const itemsBeforeEllipse = numColumns * numRows - 1
 
   useEffect(() => {
-    const newFilteredData = data.filter((item) => guesses[item.name] === isCorrect)
+    const newFilteredData = data.filter((item) => {
+      const guess = guesses[item.name]
+      if (!guess) return false
+    
+      if (isCorrect) {
+        return guess.correct === true
+      } else {
+        return guess.correct === false && guess.strikes >= 3
+      }
+    })
+    
 
     if (newFilteredData.length > itemsBeforeEllipse) {
       setFilteredData(newFilteredData.slice(-itemsBeforeEllipse))

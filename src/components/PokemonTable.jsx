@@ -4,28 +4,47 @@ import { isGuessCloseEnough, formatTimeString } from "../utils/utils"
 import CompletedPokemon from "./CompletedPokemon"
 
 const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, data }) => {
-  const [guesses, setGuesses] = useState({})
+  const [guesses, setGuesses] = useState({}) // { [name]: { correct: boolean, strikes: number } }
   const [current, setCurrent] = useState(0)
   const windowSize = 5
 
   const handleGuess = (name, event) => {
     const { value } = event.target
-    const isCorrect = isGuessCloseEnough(value.trim().toLowerCase(), name.toLowerCase())
-
-    setGuesses(prevGuesses => ({
-      ...prevGuesses, 
-      [name]: isCorrect
-    }))
-    setCurrent(current + 1)
-
-    if (isCorrect) {
-      setScore(prevScore => hardMode ? prevScore + 2 : prevScore + 1)
-    }
-
-    if (current === data.length - 1) {
-      setFinished(true)
-    }
+    const guess = value.trim().toLowerCase()
+    const isCorrect = isGuessCloseEnough(guess, name.toLowerCase())
+  
+    setGuesses(prev => {
+      const prevEntry = prev[name] || { correct: false, strikes: 0 }
+  
+      // Already guessed correctly or failed
+      if (prevEntry.correct || prevEntry.strikes >= 3) return prev
+  
+      if (isCorrect) {
+        if (hardMode) setScore(s => s + 2)
+        else setScore(s => s + 1)
+        if (current === data.length - 1) setFinished(true)
+  
+        setCurrent(c => c + 1)
+        return {
+          ...prev,
+          [name]: { correct: true, strikes: prevEntry.strikes }
+        }
+      } else {
+        const newStrikes = prevEntry.strikes + 1
+        if (newStrikes >= 3 && current === data.length - 1) setFinished(true)
+  
+        if (newStrikes >= 3) {
+          setCurrent(c => c + 1)
+        }
+  
+        return {
+          ...prev,
+          [name]: { correct: false, strikes: newStrikes }
+        }
+      }
+    })
   }
+  
 
   return (
     <Grid container spacing={2}>
@@ -35,7 +54,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
       <Grid item xs={6} >
       {data.slice(0, Math.min(data.length, current + windowSize)).map((item, index) => (
         <Grid item sm={12} key={item.name} textAlign="center" className="pokemon-item" style={{ opacity: 1 - Math.min(Math.abs(index - current) / (windowSize), 1) }}>
-          {guesses[item.name] === undefined && index === current && current !== data.length && (
+          {(!guesses[item.name] || (!guesses[item.name].correct && guesses[item.name].strikes < 3)) && index === current && current !== data.length && (
             <div className="pokemon-item focused" >
               <Grid container spacing={0} direction="column" >
                 <Grid item display="flex" justifyContent="center" alignItems="center">
@@ -52,6 +71,21 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                     }} 
                   />
                   {!hardMode && <img src={item.imageSil} alt={item.name} />}
+                </Grid>
+                <Grid>
+                <Box mt={1} display="flex" justifyContent="center">
+                    {Array.from({ length: guesses[item.name]?.strikes || 0 }).map((_, i) => (
+                      <Typography
+                        key={i}
+                        role="img"
+                        aria-label="strike"
+                        component="span"
+                        sx={{ fontSize: "1.5rem", mx: 0.3 }}
+                      >
+                        ❌
+                      </Typography>
+                    ))}
+                  </Box>
                 </Grid>
                 <Grid item>
                   {item.types && (
@@ -71,7 +105,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
               </Grid>
             </div>
           )}
-          {guesses[item.name] === undefined && index !== current && (
+          {(!guesses[item.name] || (!guesses[item.name].correct && guesses[item.name].strikes < 3)) && index !== current && (
             <>
               {!hardMode && <img src={item.imageSil} alt={item.name} />}
               <TextField

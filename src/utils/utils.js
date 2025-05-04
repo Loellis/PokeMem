@@ -22,6 +22,8 @@ const calculateLevenshteinDistance = (s1, s2) => {
 
 const isGuessCloseEnough = (guess, correctAnswer) => {
   const threshold = 2
+  if (correctAnswer.toLowerCase().includes("nidoran"))
+    correctAnswer = "nidoran"
   return calculateLevenshteinDistance(guess.toLowerCase(), correctAnswer.toLowerCase()) < threshold
 }
 
