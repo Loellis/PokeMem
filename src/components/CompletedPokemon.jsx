@@ -1,7 +1,6 @@
 import { Paper } from "@mui/material";
 import { useState, useEffect } from "react";
 
-
 const CompletedPokemon = ({ guesses, data, isCorrect }) => {
   const [filteredData, setFilteredData] = useState([]);
   const columns = 4; // keep layout consistent at 4 Pokémon per row

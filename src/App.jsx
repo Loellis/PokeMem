@@ -87,13 +87,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <StartPage
-              onStart={(isHardMode, gens) => handleStart(isHardMode, gens)}
-              setHardMode={() => {}}
-              setGenerations={() => {}}
-            />
-          }
+          element={<StartPage onStart={(isHardMode, gens) => handleStart(isHardMode, gens)} />}
         />
         <Route path="/game" element={<Game />} />
       </Routes>
