@@ -16,7 +16,8 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
   const [current, setCurrent] = useState(0);
   const windowSize = 5;
   const isSmallScreen = useMediaQuery("(max-width:600px)");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  // 'correct' | 'incorrect' | null – controls which list is shown in mobile drawer
+  const [drawerType, setDrawerType] = useState(null);
 
   const handleGuess = (name, inputOrEvent) => {
     // Support being passed either an event from input/onKeyDown or a raw string value
@@ -62,21 +63,30 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
       {isSmallScreen && (
         <SwipeableDrawer
           anchor="bottom"
-          open={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
+          open={drawerType !== null}
+          onClose={() => setDrawerType(null)}
           onOpen={() => {}}
         >
-          <Box p={2}>
-            <CompletedPokemon guesses={guesses} data={data} isCorrect={true} />
-            <Box mt={2} />
-            <CompletedPokemon guesses={guesses} data={data} isCorrect={false} />
+          <Box
+            p={2}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {drawerType === "correct" && (
+              <CompletedPokemon guesses={guesses} data={data} isCorrect={true} />
+            )}
+            {drawerType === "incorrect" && (
+              <CompletedPokemon guesses={guesses} data={data} isCorrect={false} />
+            )}
           </Box>
         </SwipeableDrawer>
       )}
 
       <Grid container spacing={2} alignItems="flex-start">
         {/* Left column – hide on small screens */}
-        <Grid item xs={12} md={3} sx={{ display: { xs: "none", md: "block" } }}>
+        <Grid item xs={12} md={3} sx={{ display: { xs: "none", md: "block" }, mt: { md: 8 } }}>
           <CompletedPokemon guesses={guesses} data={data} isCorrect={true} />
         </Grid>
 
@@ -88,12 +98,12 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
               <Chip
                 label={`✅ ${correctCount}`}
                 color="success"
-                onClick={() => setDrawerOpen(true)}
+                onClick={() => setDrawerType("correct")}
               />
               <Chip
                 label={`❌ ${incorrectCount}`}
                 color="error"
-                onClick={() => setDrawerOpen(true)}
+                onClick={() => setDrawerType("incorrect")}
               />
             </Box>
           )}
@@ -234,7 +244,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
         </Grid>
 
         {/* Right column – hide on small screens */}
-        <Grid item xs={12} md={3} sx={{ display: { xs: "none", md: "block" } }}>
+        <Grid item xs={12} md={3} sx={{ display: { xs: "none", md: "block" }, mt: { md: 8 } }}>
           <CompletedPokemon guesses={guesses} data={data} isCorrect={false} />
         </Grid>
       </Grid>

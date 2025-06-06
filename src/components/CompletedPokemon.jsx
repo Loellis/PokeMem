@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 const CompletedPokemon = ({ guesses, data, isCorrect }) => {
   const [filteredData, setFilteredData] = useState([]);
   const columns = 4; // keep layout consistent at 4 Pokémon per row
+  const tileSize = 49;
+  const gap = 10;
   const maxRows = 8; // show up to 8 rows before scrolling
-  const containerHeight = 59 * maxRows; // 49px image + ~10px gap
+  const containerHeight = (tileSize + gap) * maxRows - gap; // image + internal gaps
+  const paperWidth = columns * tileSize + (columns - 1) * gap;
 
   useEffect(() => {
     const newFilteredData = data.filter((item) => {
@@ -27,15 +30,22 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
       {filteredData.length > 0 && (
         <div
           style={{
+            position: "relative",
             display: "flex",
-            alignItems: "flex-start",
-            flexDirection: isCorrect ? "row" : "row-reverse",
+            justifyContent: "center",
           }}
         >
           <span
             role="img"
             aria-label={isCorrect ? "checkmark" : "cross"}
-            style={{ fontSize: "2rem", margin: isCorrect ? "0 8px 0 0" : "0 0 0 8px" }}
+            style={{
+              fontSize: "2rem",
+              position: "absolute",
+              top: 0,
+              transform: "none",
+              left: isCorrect ? "-35px" : "auto",
+              right: isCorrect ? "auto" : "-35px",
+            }}
           >
             {isCorrect ? "✅" : "❌"}
           </span>
@@ -45,12 +55,14 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
               border: `3px solid ${isCorrect ? "#5DA746" : "#BA0C0C"}`,
               padding: "5px",
               display: "grid",
-              gridTemplateColumns: `repeat(${columns}, 49px)`,
+              gridTemplateColumns: `repeat(${columns}, ${tileSize}px)`,
               justifyContent: "center",
-              gap: "10px 10px",
-              maxWidth: "80%",
+              gap: `${gap}px ${gap}px`,
+              width: "100%",
+              maxWidth: `${paperWidth}px`,
               maxHeight: `${containerHeight}px`,
               overflowY: "auto",
+              overflowX: "hidden",
               // Use overlay scrollbar where supported so width doesn't change
               scrollbarGutter: "stable", // keeps space for scrollbar preventing reflow
             }}
