@@ -25,3 +25,14 @@
   50% { transform: rotate(2deg); }
   100% { transform: rotate(-2deg); }
 }
+
+@font-face {
+  font-family: 'PokemonPixel';
+  src: url('./assets/PokemonPixelFont.woff') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'PokemonPixel';
+}

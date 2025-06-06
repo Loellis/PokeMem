@@ -6,77 +6,97 @@ import GameTracker from "./components/GameTracker"
 import { useState, useRef, useEffect, useMemo } from "react"
 import StartPage from "./components/StartPage"
 import { genI, genII, genIII } from "./assets/pokemonData"
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
 
-function App() {
-  const [score, setScore] = useState(0)
-  const [gameStarted, setGameStarted] = useState(false)
-  const [elapsedTime, setElapsedTime] = useState(0)
-  const [finished, setFinished] = useState(false)
-  const [hardMode, setHardMode] = useState(false)
-  const [generations, setGenerations] = useState(0)
-  const timeRef = useRef(null)
+function Game() {
+  const location = useLocation();
+  const { hardMode = false, generations = 1 } = location.state || {};
+
+  const [score, setScore] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const timeRef = useRef(null);
 
   const data = useMemo(() => {
-    console.log(generations)
-    const selectedData = []
+    const selectedData = [];
     if (generations === 111) {
-      selectedData.push(genI, genII, genIII)
+      selectedData.push(genI, genII, genIII);
     } else if (generations === 11) {
-      selectedData.push(genI, genII)
+      selectedData.push(genI, genII);
     } else if (generations === 101) {
-      selectedData.push(genI, genIII)
+      selectedData.push(genI, genIII);
     } else if (generations === 110) {
-      selectedData.push(genII, genIII)
+      selectedData.push(genII, genIII);
     } else if (generations === 100) {
-      selectedData.push(genIII)
+      selectedData.push(genIII);
     } else if (generations === 10) {
-      selectedData.push(genII)
+      selectedData.push(genII);
     } else if (generations === 1) {
-      selectedData.push(genI)
+      selectedData.push(genI);
     } else {
-      selectedData.push(genI)
+      selectedData.push(genI);
     }
-    return [].concat(...selectedData)
-  }, [generations])
-  
+    return [].concat(...selectedData);
+  }, [generations]);
 
   useEffect(() => {
-    if (gameStarted && !finished) {
+    if (!finished) {
       timeRef.current = setInterval(() => {
-        setElapsedTime((prevTime) => prevTime + 1)
-      }, 1000)
+        setElapsedTime((prevTime) => prevTime + 1);
+      }, 1000);
     } else {
-      clearInterval(timeRef.current)
+      clearInterval(timeRef.current);
     }
 
-    return () => clearInterval(timeRef.current)
-  }, [gameStarted, finished])
+    return () => clearInterval(timeRef.current);
+  }, [finished]);
 
-  const handleStart = (isHardMode) => {
+  return (
+    <Grid container direction="column" style={{ minHeight: "90vh" }}>
+      {!finished && (
+        <Grid item>
+          <GameTracker score={score} elapsedTime={elapsedTime} />
+        </Grid>
+      )}
+      <Grid item>
+        <PokemonTable
+          score={score}
+          setScore={setScore}
+          elapsedTime={elapsedTime}
+          hardMode={hardMode}
+          setFinished={setFinished}
+          data={data}
+        />
+      </Grid>
+    </Grid>
+  );
+}
+
+function App() {
+  const navigate = useNavigate()
+  const [gameStarted, setGameStarted] = useState(false)
+
+  const handleStart = (isHardMode, gens) => {
     setGameStarted(true)
-    setHardMode(isHardMode)
+    navigate("/game", { state: { hardMode: isHardMode, generations: gens } })
   }
 
   return (
     <>
-    <Header gameStarted={gameStarted} />
-    <Grid container direction="column"  style={{ minHeight: "90vh" }} >
-      {!gameStarted && (
-        <StartPage onStart={handleStart} setHardMode={setHardMode} setGenerations={setGenerations}/>
-      )}
-      {gameStarted && (
-        <>
-          {!finished && (
-            <Grid item>
-              <GameTracker score={score} elapsedTime={elapsedTime} />
-            </Grid>
-          )}
-          <Grid item>
-            <PokemonTable score={score} setScore={setScore} elapsedTime={elapsedTime} hardMode={hardMode} setFinished={setFinished} data={data} />
-          </Grid>
-        </>
-      )}
-    </Grid>
+      <Header gameStarted={gameStarted} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <StartPage
+              onStart={(isHardMode, gens) => handleStart(isHardMode, gens)}
+              setHardMode={() => {}}
+              setGenerations={() => {}}
+            />
+          }
+        />
+        <Route path="/game" element={<Game />} />
+      </Routes>
     </>
   )
 }
