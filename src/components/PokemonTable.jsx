@@ -18,8 +18,9 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
   const isSmallScreen = useMediaQuery("(max-width:600px)");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleGuess = (name, event) => {
-    const { value } = event.target;
+  const handleGuess = (name, inputOrEvent) => {
+    // Support being passed either an event from input/onKeyDown or a raw string value
+    const value = typeof inputOrEvent === "string" ? inputOrEvent : inputOrEvent.target.value;
     const guess = value.trim().toLowerCase();
     const isCorrect = isGuessCloseEnough(guess, name.toLowerCase());
 
@@ -106,6 +107,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
               className="pokemon-item"
               style={{ opacity: 1 - Math.min(Math.abs(index - current) / windowSize, 1) }}
             >
+              {/* CURRENT ITEM */}
               {(!guesses[item.name] ||
                 (!guesses[item.name].correct && guesses[item.name].strikes < 3)) &&
                 index === current &&
@@ -125,18 +127,23 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                         >
                           #{index + 1}
                         </Typography>
-                        <TextField
-                          margin="normal"
-                          autoFocus
-                          style={{ width: isSmallScreen ? "80%" : "40%" }}
-                          label="Enter Pokémon Name"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              handleGuess(item.name, e);
-                            }
+                        {/* FORM WRAPS INPUT TO CAPTURE ENTER ON MOBILE */}
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const value = e.currentTarget.elements[0].value;
+                            handleGuess(item.name, value);
                           }}
-                        />
+                          style={{ width: isSmallScreen ? "80%" : "40%" }}
+                        >
+                          <TextField
+                            name="guess"
+                            margin="normal"
+                            autoFocus
+                            fullWidth
+                            label="Enter Pokémon Name"
+                          />
+                        </form>
                         {!hardMode && <img src={item.imageSil} alt={item.name} />}
                       </Grid>
                       {/* strikes */}
@@ -175,22 +182,27 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                   </div>
                 )}
 
+              {/* NON-CURRENT ITEMS */}
               {(!guesses[item.name] ||
                 (!guesses[item.name].correct && guesses[item.name].strikes < 3)) &&
                 index !== current && (
                   <>
                     {!hardMode && <img src={item.imageSil} alt={item.name} />}
-                    <TextField
-                      style={{ width: isSmallScreen ? "90%" : "60%" }}
-                      label="Enter Pokémon Name"
-                      margin="normal"
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleGuess(item.name, e);
-                        }
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        const value = e.currentTarget.elements[0].value;
+                        handleGuess(item.name, value);
                       }}
-                    />
+                      style={{ width: isSmallScreen ? "90%" : "60%" }}
+                    >
+                      <TextField
+                        name="guess"
+                        fullWidth
+                        label="Enter Pokémon Name"
+                        margin="normal"
+                      />
+                    </form>
                   </>
                 )}
             </Grid>
