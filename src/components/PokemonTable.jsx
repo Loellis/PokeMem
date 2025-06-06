@@ -84,7 +84,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
         <Grid item xs={12} md={6}>
           {/* Chips only on mobile */}
           {isSmallScreen && (
-            <Box mb={2} display="flex" justifyContent="center" gap={2}>
+            <Box mb={2} display="flex" justifyContent="center" gap={isSmallScreen ? 1 : 2}>
               <Chip
                 label={`✅ ${correctCount}`}
                 color="success"
@@ -134,7 +134,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                             const value = e.currentTarget.elements[0].value;
                             handleGuess(item.name, value);
                           }}
-                          style={{ width: isSmallScreen ? "80%" : "40%" }}
+                          style={{ width: isSmallScreen ? "80%" : "40%", display: "inline-block" }}
                         >
                           <TextField
                             name="guess"
@@ -186,8 +186,21 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
               {(!guesses[item.name] ||
                 (!guesses[item.name].correct && guesses[item.name].strikes < 3)) &&
                 index !== current && (
-                  <>
-                    {!hardMode && <img src={item.imageSil} alt={item.name} />}
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    flexDirection={isSmallScreen ? "column" : "row"}
+                    gap={isSmallScreen ? 0 : 2}
+                    sx={{ mb: isSmallScreen ? 1.5 : 2 }}
+                  >
+                    {!hardMode && (
+                      <img
+                        src={item.imageSil}
+                        alt={item.name}
+                        style={{ maxWidth: isSmallScreen ? "120px" : "150px" }}
+                      />
+                    )}
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
@@ -203,7 +216,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                         margin="normal"
                       />
                     </form>
-                  </>
+                  </Box>
                 )}
             </Grid>
           ))}
