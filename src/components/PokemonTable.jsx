@@ -131,7 +131,10 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                           style={{ width: isSmallScreen ? "80%" : "40%" }}
                           label="Enter Pokémon Name"
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") handleGuess(item.name, e);
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleGuess(item.name, e);
+                            }
                           }}
                         />
                         {!hardMode && <img src={item.imageSil} alt={item.name} />}
@@ -182,7 +185,10 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                       label="Enter Pokémon Name"
                       margin="normal"
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") handleGuess(item.name, e);
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleGuess(item.name, e);
+                        }
                       }}
                     />
                   </>
