@@ -1,27 +1,27 @@
-import { useState } from "react"
-import { Button, Checkbox, FormControlLabel, Grid } from "@mui/material"
+import { useState } from "react";
+import { Button, Checkbox, FormControlLabel, Grid } from "@mui/material";
 
 const StartPage = ({ onStart }) => {
-  const [isGameStarted, setIsGameStarted] = useState(false)
-  const [hardMode, setHardModeLocal] = useState(false)
-  const [generations, setGenerationsLocal] = useState(0)
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [hardMode, setHardModeLocal] = useState(false);
+  const [generations, setGenerationsLocal] = useState(0);
 
   const handleStartClick = () => {
-    setIsGameStarted(true)
-    onStart(hardMode, generations)
-  }
+    setIsGameStarted(true);
+    onStart(hardMode, generations);
+  };
 
   const handleHardModeChange = (event) => {
-    setHardModeLocal(event.target.checked)
-  }
+    setHardModeLocal(event.target.checked);
+  };
 
   const handleGenerationChange = (event) => {
-    const value = parseInt(event.target.value)
-    setGenerationsLocal(prev => event.target.checked ? prev + value : prev - value)
-  }
+    const value = parseInt(event.target.value);
+    setGenerationsLocal((prev) => (event.target.checked ? prev + value : prev - value));
+  };
 
   if (isGameStarted) {
-    return null
+    return null;
   }
 
   return (
@@ -58,7 +58,7 @@ const StartPage = ({ onStart }) => {
         </Grid>
       </Grid>
     </div>
-  )
-}
+  );
+};
 
-export default StartPage
+export default StartPage;

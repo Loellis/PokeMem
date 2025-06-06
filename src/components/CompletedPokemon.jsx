@@ -1,49 +1,42 @@
-import { Paper, Stack, Typography } from "@mui/material"
-import { useState, useEffect } from "react"
+import { Paper } from "@mui/material";
+import { useState, useEffect } from "react";
 
-const numberOfColumns = () => {
-  const full_width = Math.min(1280, window.innerWidth)
-  const sidebar_width = full_width/4
-  const sidebar_adjusted = sidebar_width - 100
-  const numOfCols = Math.floor(sidebar_adjusted / 49)
-
-  return numOfCols
-}
 
 const CompletedPokemon = ({ guesses, data, isCorrect }) => {
-  const [filteredData, setFilteredData] = useState([])
-  const numColumns = numberOfColumns()
-  const numRows = 7
-  const itemsBeforeEllipse = numColumns * numRows - 1
+  const [filteredData, setFilteredData] = useState([]);
+  const columns = 4; // keep layout consistent at 4 Pokémon per row
+  const maxRows = 8; // show up to 8 rows before scrolling
+  const containerHeight = 59 * maxRows; // 49px image + ~10px gap
 
   useEffect(() => {
     const newFilteredData = data.filter((item) => {
-      const guess = guesses[item.name]
-      if (!guess) return false
-    
-      if (isCorrect) {
-        return guess.correct === true
-      } else {
-        return guess.correct === false && guess.strikes >= 3
-      }
-    })
-    
+      const guess = guesses[item.name];
+      if (!guess) return false;
 
-    if (newFilteredData.length > itemsBeforeEllipse) {
-      setFilteredData(newFilteredData.slice(-itemsBeforeEllipse))
-    } else {
-      setFilteredData(newFilteredData)
-    }
-  }, [data, guesses, isCorrect, itemsBeforeEllipse])
+      if (isCorrect) {
+        return guess.correct === true;
+      } else {
+        return guess.correct === false && guess.strikes >= 3;
+      }
+    });
+
+    setFilteredData(newFilteredData);
+  }, [data, guesses, isCorrect]);
 
   return (
     <div style={{ justifyContent: "center", alignItems: "center", maxWidth: "100%" }}>
       {filteredData.length > 0 && (
-        <>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            flexDirection: isCorrect ? "row" : "row-reverse",
+          }}
+        >
           <span
             role="img"
             aria-label={isCorrect ? "checkmark" : "cross"}
-            style={{ fontSize: "2rem", position: "relative", top: filteredData.length === itemsBeforeEllipse ? 0 : "-1em" }}
+            style={{ fontSize: "2rem", margin: isCorrect ? "0 8px 0 0" : "0 0 0 8px" }}
           >
             {isCorrect ? "✅" : "❌"}
           </span>
@@ -52,31 +45,30 @@ const CompletedPokemon = ({ guesses, data, isCorrect }) => {
               margin: "5px",
               border: `3px solid ${isCorrect ? "#5DA746" : "#BA0C0C"}`,
               padding: "5px",
-              display: "inline-flex",
-              flexWrap: "wrap",
+              display: "grid",
+              gridTemplateColumns: `repeat(${columns}, 49px)`,
               justifyContent: "center",
+              gap: "10px 10px",
               maxWidth: "80%",
-              maxHeight: "55vh",
-              overflow: "hidden"
+              maxHeight: `${containerHeight}px`,
+              overflowY: "auto",
+              // Use overlay scrollbar where supported so width doesn't change
+              scrollbarGutter: "stable", // keeps space for scrollbar preventing reflow
             }}
           >
-            {filteredData.length === itemsBeforeEllipse && (
-              <Stack sx={{ margin: "5px", maxWidth: "49px" }}>
-                <Typography fontSize="16px" fontWeight="bold" textAlign="center" width="49px">
-                  . . .
-                </Typography>
-              </Stack>
-            )}
             {filteredData.map((item) => (
-              <Stack key={item.name} sx={{ margin: "5px", maxWidth: "49px" }}>
-                <img src={item.image} alt={item.name} style={{ margin: "1px" }} />
-              </Stack>
+              <img
+                key={item.name}
+                src={item.image.startsWith("/") ? item.image : `/${item.image}`}
+                alt={item.name}
+                style={{ width: "49px", height: "49px" }}
+              />
             ))}
           </Paper>
-        </>
+        </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CompletedPokemon
+export default CompletedPokemon;

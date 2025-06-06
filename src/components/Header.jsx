@@ -27,7 +27,7 @@ const Header = ({ gameStarted }) => {
       <Grid container justifyContent="center" alignItems="center">
         <Grid item textAlign="center">
           <img
-            src="banner.png"
+            src="/banner.png"
             alt="Image of the text 'Who's that Pokémon' in the Pokémon font"
             width={!gameStarted ? "100%" : "65%"}
             className={!gameStarted ? "wiggle-image" : ""}
@@ -39,12 +39,16 @@ const Header = ({ gameStarted }) => {
 
       <Dialog open={showModal} onClose={handleCancel}>
         <DialogTitle>Return to Start?</DialogTitle>
-        <DialogContent sx={{ fontFamily: 'PokemonPixel', fontSize: '1rem' }}>
+        <DialogContent sx={{ fontFamily: "PokemonPixel", fontSize: "1rem" }}>
           Do you really want to return to the home screen? Your current progress will be lost.
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="primary">Cancel</Button>
-          <Button onClick={handleConfirm} color="error">Yes, return</Button>
+          <Button onClick={handleCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirm} color="error">
+            Yes, return
+          </Button>
         </DialogActions>
       </Dialog>
     </>

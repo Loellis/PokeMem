@@ -1,12 +1,12 @@
-import { Grid } from "@mui/material"
-import PokemonTable from "./components/PokemonTable"
-import Header from "./components/Header"
-import "./App.css"
-import GameTracker from "./components/GameTracker"
-import { useState, useRef, useEffect, useMemo } from "react"
-import StartPage from "./components/StartPage"
-import { genI, genII, genIII } from "./assets/pokemonData"
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
+import { Grid } from "@mui/material";
+import PokemonTable from "./components/PokemonTable";
+import Header from "./components/Header";
+import "./App.css";
+import GameTracker from "./components/GameTracker";
+import { useState, useRef, useEffect, useMemo } from "react";
+import StartPage from "./components/StartPage";
+import { genI, genII, genIII } from "./assets/pokemonData";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 function Game() {
   const location = useLocation();
@@ -41,14 +41,14 @@ function Game() {
 
   useEffect(() => {
     if (!finished) {
-      timeRef.current = setInterval(() => {
+      timeRef.current = window.setInterval(() => {
         setElapsedTime((prevTime) => prevTime + 1);
       }, 1000);
     } else {
-      clearInterval(timeRef.current);
+      window.clearInterval(timeRef.current);
     }
 
-    return () => clearInterval(timeRef.current);
+    return () => window.clearInterval(timeRef.current);
   }, [finished]);
 
   return (
@@ -73,13 +73,13 @@ function Game() {
 }
 
 function App() {
-  const navigate = useNavigate()
-  const [gameStarted, setGameStarted] = useState(false)
+  const navigate = useNavigate();
+  const [gameStarted, setGameStarted] = useState(false);
 
   const handleStart = (isHardMode, gens) => {
-    setGameStarted(true)
-    navigate("/game", { state: { hardMode: isHardMode, generations: gens } })
-  }
+    setGameStarted(true);
+    navigate("/game", { state: { hardMode: isHardMode, generations: gens } });
+  };
 
   return (
     <>
@@ -98,7 +98,7 @@ function App() {
         <Route path="/game" element={<Game />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
