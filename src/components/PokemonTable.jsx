@@ -59,6 +59,15 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
 
   return (
     <>
+      {/* Datalist for mobile autocomplete */}
+      {isSmallScreen && (
+        <datalist id="pokemon-options">
+          {data.map((p) => (
+            <option key={p.name} value={p.name} />
+          ))}
+        </datalist>
+      )}
+
       {/* Mobile bottom drawer with completed Pokémon */}
       {isSmallScreen && (
         <SwipeableDrawer
@@ -152,6 +161,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                             autoFocus
                             fullWidth
                             label="Enter Pokémon Name"
+                            inputProps={{ list: isSmallScreen ? "pokemon-options" : undefined }}
                           />
                         </form>
                         {!hardMode && <img src={item.imageSil} alt={item.name} />}
@@ -224,6 +234,7 @@ const PokemonTable = ({ score, setScore, hardMode, elapsedTime, setFinished, dat
                         fullWidth
                         label="Enter Pokémon Name"
                         margin="normal"
+                        inputProps={{ list: isSmallScreen ? "pokemon-options" : undefined }}
                       />
                     </form>
                   </Box>
