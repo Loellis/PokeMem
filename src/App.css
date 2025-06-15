@@ -1,59 +1,59 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 2rem;
+	text-align: center;
 }
 
 .pokemon-item.focused {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 2em 0;
-  padding: 2em 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 2em 0;
+	padding: 2em 0;
 
-  box-shadow: 10px 10px 20px 0px #808080;
-  border-radius: 25px;
+	box-shadow: 10px 10px 20px 0px #808080;
+	border-radius: 25px;
 
-  /* subtle pulse animation when this Pokémon gains focus */
-  animation: focusPulse 0.4s ease-out;
+	/* subtle pulse animation when this Pokémon gains focus */
+	animation: focusPulse 0.4s ease-out;
 }
 
 @keyframes focusPulse {
-  0% {
-    transform: scale(0.95);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
+	0% {
+		transform: scale(0.95);
+	}
+	50% {
+		transform: scale(1.05);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 
 .wiggle-image {
-  animation: wiggle 1s ease-in-out infinite;
+	animation: wiggle 1s ease-in-out infinite;
 }
 
 @keyframes wiggle {
-  0% {
-    transform: rotate(-2deg);
-  }
-  50% {
-    transform: rotate(2deg);
-  }
-  100% {
-    transform: rotate(-2deg);
-  }
+	0% {
+		transform: rotate(-2deg);
+	}
+	50% {
+		transform: rotate(2deg);
+	}
+	100% {
+		transform: rotate(-2deg);
+	}
 }
 
 @font-face {
-  font-family: "PokemonPixel";
-  src: url("./assets/PokemonPixelFont.woff") format("truetype");
-  font-weight: normal;
-  font-style: normal;
+	font-family: "PokemonPixel";
+	src: url("./assets/PokemonPixelFont.woff") format("truetype");
+	font-weight: normal;
+	font-style: normal;
 }
 
 body {
-  font-family: "PokemonPixel";
+	font-family: "PokemonPixel";
 }
